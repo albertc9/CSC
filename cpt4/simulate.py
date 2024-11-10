@@ -4,7 +4,7 @@
 #=========================================================================
 from pymtl3 import *
 from sys import argv
-from RegIncr import RegIncr
+from regIncr import RegIncr
 
 # 从命令行获取输入值列表
 input_values = [int(x, 0) for x in argv[1:]]
@@ -16,7 +16,7 @@ model = RegIncr()
 model.elaborate()
 
 # 应用默认的通用 Pass 组以添加模拟功能
-model.apply(DefaultPassGroup())
+model.apply(DefaultPassGroup(vcdwave='regIncr-sim'))
 
 # 重置模拟器
 model.sim_reset()
