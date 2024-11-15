@@ -16,7 +16,11 @@ model = RegIncr()
 model.elaborate()
 
 # 应用默认的通用 Pass 组以添加模拟功能
-model.apply(DefaultPassGroup(vcdwave='regIncr-sim'))
+# model.apply(DefaultPassGroup(vcdwave='regIncr-sim'))
+
+# model.apply(DefaultPassGroup(textwave=True))
+
+model.apply(DefaultPassGroup(textwave=True))
 
 # 重置模拟器
 model.sim_reset()
@@ -31,3 +35,5 @@ for input_value in input_values:
     
     # 模拟器前进一个周期
     model.sim_tick()
+
+    model.print_textwave()
