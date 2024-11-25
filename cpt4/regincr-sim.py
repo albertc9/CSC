@@ -4,7 +4,7 @@
 #=========================================================================
 from pymtl3 import *
 from sys import argv
-from regIncr import RegIncr
+from cpt4.RegIncr import RegIncr
 
 # 从命令行获取输入值列表
 input_values = [int(x, 0) for x in argv[1:]]

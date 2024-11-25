@@ -1,6 +1,6 @@
 from pymtl3 import *
 from pymtl3.stdlib.test_utils import config_model_with_cmdline_opts
-from regIncr import RegIncr
+from cpt4.RegIncr import RegIncr
 
 def test_basic(cmdline_opts):
     model = RegIncr()

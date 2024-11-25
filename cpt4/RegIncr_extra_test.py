@@ -1,6 +1,6 @@
 from pymtl3 import *
 from pymtl3.stdlib.test_utils import run_test_vector_sim
-from regIncr import RegIncr
+from cpt4.RegIncr import RegIncr
 
 # 测试小输入值
 def test_small(cmdline_opts):
