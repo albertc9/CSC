@@ -1,0 +1,11 @@
+# 读取 Verilog 文件
+read_verilog -sv SortUnitFlatRTL__nbits_8.v
+
+# 读取标准单元库
+read_liberty -lib /home/albert/OpenROAD-flow-scripts/flow/platforms/nangate45/lib/NangateOpenCellLibrary_typical.lib
+
+# 综合为门级网表
+synth -top SortUnitFlatRTL__nbits_8  # 替换为你的顶层模块名称
+
+# 输出网表为 JSON 格式
+write_json circuit.json

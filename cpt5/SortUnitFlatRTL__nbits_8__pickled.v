@@ -16,14 +16,20 @@ module SortUnitFlatRTL__nbits_8
   input  logic [0:0] reset 
 );
   logic [7:0] elm_S1 [0:3];
+  logic [7:0] elm_S2 [0:3];
+  logic [7:0] elm_S3 [0:3];
   logic [7:0] elm_next_S1 [0:3];
+  logic [7:0] elm_next_S2 [0:3];
+  logic [7:0] elm_next_S3 [0:3];
   logic [0:0] val_S1;
+  logic [0:0] val_S2;
+  logic [0:0] val_S3;
 
   // PyMTL Update Block Source
-  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:29
+  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:46
   // @update
   // def stage_S1():
-  //     # 比较输入数据对 (0,1)
+  //     # Sort elements 0 and 1
   //     if s.elm_S1[0] <= s.elm_S1[1]:
   //         s.elm_next_S1[0] @= s.elm_S1[0]
   //         s.elm_next_S1[1] @= s.elm_S1[1]
@@ -31,7 +37,7 @@ module SortUnitFlatRTL__nbits_8
   //         s.elm_next_S1[0] @= s.elm_S1[1]
   //         s.elm_next_S1[1] @= s.elm_S1[0]
   // 
-  //     # 比较输入数据对 (2,3)
+  //     # Sort elements 2 and 3
   //     if s.elm_S1[2] <= s.elm_S1[3]:
   //         s.elm_next_S1[2] @= s.elm_S1[2]
   //         s.elm_next_S1[3] @= s.elm_S1[3]
@@ -59,15 +65,83 @@ module SortUnitFlatRTL__nbits_8
   end
 
   // PyMTL Update Block Source
-  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:16
+  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:87
+  // @update
+  // def stage_S2():
+  //     # Sort elements 0 and 2
+  //     if s.elm_S2[0] <= s.elm_S2[2]:
+  //         s.elm_next_S2[0] @= s.elm_S2[0]
+  //         s.elm_next_S2[2] @= s.elm_S2[2]
+  //     else:
+  //         s.elm_next_S2[0] @= s.elm_S2[2]
+  //         s.elm_next_S2[2] @= s.elm_S2[0]
+  // 
+  //     # Sort elements 1 and 3
+  //     if s.elm_S2[1] <= s.elm_S2[3]:
+  //         s.elm_next_S2[1] @= s.elm_S2[1]
+  //         s.elm_next_S2[3] @= s.elm_S2[3]
+  //     else:
+  //         s.elm_next_S2[1] @= s.elm_S2[3]
+  //         s.elm_next_S2[3] @= s.elm_S2[1]
+  
+  always_comb begin : stage_S2
+    if ( elm_S2[2'd0] <= elm_S2[2'd2] ) begin
+      elm_next_S2[2'd0] = elm_S2[2'd0];
+      elm_next_S2[2'd2] = elm_S2[2'd2];
+    end
+    else begin
+      elm_next_S2[2'd0] = elm_S2[2'd2];
+      elm_next_S2[2'd2] = elm_S2[2'd0];
+    end
+    if ( elm_S2[2'd1] <= elm_S2[2'd3] ) begin
+      elm_next_S2[2'd1] = elm_S2[2'd1];
+      elm_next_S2[2'd3] = elm_S2[2'd3];
+    end
+    else begin
+      elm_next_S2[2'd1] = elm_S2[2'd3];
+      elm_next_S2[2'd3] = elm_S2[2'd1];
+    end
+  end
+
+  // PyMTL Update Block Source
+  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:128
+  // @update
+  // def stage_S3():
+  //     # Sort elements 1 and 2
+  //     if s.elm_S3[1] <= s.elm_S3[2]:
+  //         s.elm_next_S3[1] @= s.elm_S3[1]
+  //         s.elm_next_S3[2] @= s.elm_S3[2]
+  //     else:
+  //         s.elm_next_S3[1] @= s.elm_S3[2]
+  //         s.elm_next_S3[2] @= s.elm_S3[1]
+  // 
+  //     # Pass through elements 0 and 3
+  //     s.elm_next_S3[0] @= s.elm_S3[0]
+  //     s.elm_next_S3[3] @= s.elm_S3[3]
+  
+  always_comb begin : stage_S3
+    if ( elm_S3[2'd1] <= elm_S3[2'd2] ) begin
+      elm_next_S3[2'd1] = elm_S3[2'd1];
+      elm_next_S3[2'd2] = elm_S3[2'd2];
+    end
+    else begin
+      elm_next_S3[2'd1] = elm_S3[2'd2];
+      elm_next_S3[2'd2] = elm_S3[2'd1];
+    end
+    elm_next_S3[2'd0] = elm_S3[2'd0];
+    elm_next_S3[2'd3] = elm_S3[2'd3];
+  end
+
+  // PyMTL Update Block Source
+  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:30
   // @update_ff
   // def pipereg_S0S1():
   //     if s.reset:
-  //         s.val_S1 <<= 0                    # 复位时清零有效性信号
+  //         s.val_S1 <<= 0
   //     else:
-  //         s.val_S1 <<= s.in_val             # 正常传递有效性信号
+  //         s.val_S1 <<= s.in_val
   // 
-  //     for i in range(4):                    # 输入数据存入寄存器
+  //     for i in range(4):
   //         s.elm_S1[i] <<= s.in_[i]
   
   always_ff @(posedge clk) begin : pipereg_S0S1
@@ -78,6 +152,72 @@ module SortUnitFlatRTL__nbits_8
       val_S1 <= in_val;
     for ( int unsigned i = 1'd0; i < 3'd4; i += 1'd1 )
       elm_S1[2'(i)] <= in_[2'(i)];
+  end
+
+  // PyMTL Update Block Source
+  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:71
+  // @update_ff
+  // def pipereg_S1S2():
+  //     if s.reset:
+  //         s.val_S2 <<= 0
+  //     else:
+  //         s.val_S2 <<= s.val_S1
+  // 
+  //     for i in range(4):
+  //         s.elm_S2[i] <<= s.elm_next_S1[i]
+  
+  always_ff @(posedge clk) begin : pipereg_S1S2
+    if ( reset ) begin
+      val_S2 <= 1'd0;
+    end
+    else
+      val_S2 <= val_S1;
+    for ( int unsigned i = 1'd0; i < 3'd4; i += 1'd1 )
+      elm_S2[2'(i)] <= elm_next_S1[2'(i)];
+  end
+
+  // PyMTL Update Block Source
+  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:112
+  // @update_ff
+  // def pipereg_S2S3():
+  //     if s.reset:
+  //         s.val_S3 <<= 0
+  //     else:
+  //         s.val_S3 <<= s.val_S2
+  // 
+  //     for i in range(4):
+  //         s.elm_S3[i] <<= s.elm_next_S2[i]
+  
+  always_ff @(posedge clk) begin : pipereg_S2S3
+    if ( reset ) begin
+      val_S3 <= 1'd0;
+    end
+    else
+      val_S3 <= val_S2;
+    for ( int unsigned i = 1'd0; i < 3'd4; i += 1'd1 )
+      elm_S3[2'(i)] <= elm_next_S2[2'(i)];
+  end
+
+  // PyMTL Update Block Source
+  // At /home/albert/CSC/cpt5/SortUnitFlatRTL.py:146
+  // @update_ff
+  // def pipereg_S3Out():
+  //     if s.reset:
+  //         s.out_val <<= 0
+  //     else:
+  //         s.out_val <<= s.val_S3
+  // 
+  //     for i in range(4):
+  //         s.out[i] <<= s.elm_next_S3[i]
+  
+  always_ff @(posedge clk) begin : pipereg_S3Out
+    if ( reset ) begin
+      out_val <= 1'd0;
+    end
+    else
+      out_val <= val_S3;
+    for ( int unsigned i = 1'd0; i < 3'd4; i += 1'd1 )
+      out[2'(i)] <= elm_next_S3[2'(i)];
   end
 
 endmodule
